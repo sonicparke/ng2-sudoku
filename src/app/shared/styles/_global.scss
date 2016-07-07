@@ -1,0 +1,138 @@
+/**
+ * Partial: Global Styles
+ */
+
+/**
+ * Main App Layout (footer pushed to bottom)
+ */
+html,
+body,
+app-root {
+  height: 100%;
+}
+
+app-root {
+  display: block;
+  width: 100%;
+}
+
+main-content {
+  display: block;
+  width: 100%;
+  min-height: 100%;
+  overflow: auto;
+  padding-bottom: $app-footer-height;
+}
+
+app-footer {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: $app-footer-height;
+  margin-top: -$app-footer-height;
+  padding-top: 20px;
+}
+
+/**
+ * Basic styling/helpers
+ */
+body {
+  margin: 0 0;
+  font-family: $font-family-base;
+}
+
+.fill-x {
+  width: 100%;
+}
+
+.fill-y {
+  height: 100%;
+}
+
+.content {
+  padding-top: 30px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/**
+ * Flex Box Helpers
+ */
+.flex {
+  display: flex;
+}
+
+.flex-fill {
+  flex: 1 1 auto;
+}
+
+/**
+ * App Loading Spinner
+ */
+
+// scaling... any units
+$width: 100px;
+
+.main-spinner {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 5%;
+}
+
+.spinner {
+  position: relative;
+  margin: 0px auto;
+  width: $width;
+  &:before {
+    content: '';
+    display: block;
+    padding-top: 100%;
+  }
+
+  .circular {
+    animation: rotate 2s linear infinite;
+    height: 100%;
+    transform-origin: center center;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+  }
+
+  .path {
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
+    animation: dash 1s ease-in-out infinite;
+    stroke-linecap: square;
+    stroke: $brand-primary;
+  }
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes dash {
+  0% {
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: -35px;
+  }
+  100% {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: -124px;
+  }
+}
