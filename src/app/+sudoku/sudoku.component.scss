@@ -13,17 +13,11 @@
   justify-content: space-around;
 }
 
-.game-controls {
-  width: 200px;
 
-  button {
-    margin: 3px;
-  }
-}
 
 .game-board-container {
-  width: 396px;
-  height: 396px;
+  width: 407px;
+  height: 407px;
   border: 1px solid silver;
 
   .row {
@@ -50,9 +44,9 @@
   .item {
       color: #444;
       background-color: #fff;
-      padding: 5px;
-      width: 32px;
-      height: 32px;
+      padding: 12px 0 0 0;
+      width: 45px;
+      height: 45px;
       border: 1px solid #888;
       line-height: 1em;
       color: #444;

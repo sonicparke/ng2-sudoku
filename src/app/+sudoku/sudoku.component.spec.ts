@@ -82,6 +82,12 @@ describe('Component: Sudoku', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should set puzzleSolved to false on ngOnInit()', () => {
+    component.puzzleSolved = true;
+    component.ngOnInit();
+    expect(component.puzzleSolved).toBe(false);
+  });
+
   it('should get a puzzle', () => {
     expect(component.puzzle.length).toBe(9);
   });
