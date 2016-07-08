@@ -1,0 +1,90 @@
+.flex-container {
+  /* We first create a flex layout context */
+  display: flex;
+
+  /* Then we define the flow direction and if we allow the items to wrap
+   * Remember this is the same as:
+   * flex-direction: row;
+   * flex-wrap: wrap;
+   */
+  flex-flow: row wrap;
+
+  /* Then we define how is distributed the remaining space */
+  justify-content: space-around;
+}
+
+.game-controls {
+  width: 200px;
+
+  button {
+    margin: 3px;
+  }
+}
+
+.game-board-container {
+  width: 396px;
+  height: 396px;
+  border: 1px solid silver;
+
+  .row {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+
+    justify-content: space-around;
+
+    &:nth-child(4) {
+      border-top: 2px solid #000;
+    }
+    &:nth-child(6) {
+      border-bottom: 2px solid #000;
+    }
+  }
+
+  .item {
+      color: #444;
+      background-color: #fff;
+      padding: 5px;
+      width: 32px;
+      height: 32px;
+      border: 1px solid #888;
+      line-height: 1em;
+      color: #444;
+      font-weight: bold;
+      font-size: 1em;
+      text-align: center;
+
+      &.selected {
+        color: #8a6d3b;
+        background-color: #fcf8e3;
+      }
+
+      &.protected {
+        color: #31708f;
+        background-color: #d9edf7;
+      }
+
+      &.error {
+        color: #a94442;
+        background-color: #f2dede;
+      }
+
+      &.correct {
+        color: #3c763d;
+        background-color: #dff0d8;
+      }
+
+      &:nth-child(4) {
+        border-left: 2px solid #000;
+      }
+      &:nth-child(6) {
+        border-right: 2px solid #000;
+      }
+  }
+}

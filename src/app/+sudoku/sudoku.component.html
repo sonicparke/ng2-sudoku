@@ -1,3 +1,40 @@
-<p>
-  sudoku works!
-</p>
+<div >
+<div class="md-padding" >
+   <h4>Brought to you by Electrotastic</h4>
+   <h2>{{title}}</h2>
+
+    <div class="flex-container">
+      <div class="item">
+        <div class="game-board-container">
+          <ul class="row" *ngFor="let row of puzzle; let rowIndex = index">
+            <li
+              *ngFor="let item of row; let index = index"
+              (click)="itemSelect($event, rowIndex, index)"
+              class="item"
+              [class.selected]="highlightSelected === rowIndex + '' + index"
+              [class.protected]="isProtected(rowIndex, index)"
+              [class.error]="error_puzzle[rowIndex][index] === 'error'"
+              [class.correct]="puzzleSolved"
+            >
+              {{item}}
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="item game-controls">
+        <button *ngFor="let item of options" (click)="optionSelect(item)">{{item}}</button>
+        <button [disabled]="!highlightSelected" (click)="clearSelectedAnswer(item)">Clear</button>
+        <button (click)="newGame()">NEW GAME</button>
+        <button (click)="submitPuzzle()">SUBMIT</button>
+        <button (click)="solvePuzzle()">Cheat</button>
+        <div *ngIf="puzzleSolved">
+          <h2>CORRECT!!!</h2>
+        </div>
+      </div>
+
+    </div>
+
+
+
+</div>
+</div>
