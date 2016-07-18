@@ -22,16 +22,22 @@
           </div>
         </div>
       </div>
-      <div class="col-md-3 col-lg-3 ">
+      <div class="col-md-4 col-lg-4 ">
         <div class="item game-controls">
           <div class="row">
-            <button class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-4 btn btn-primary" *ngFor="let item of options" (click)="optionSelect(item)">{{item}}</button>
-            <button class="btn-block btn btn-primary-outline" [disabled]="!highlightSelected" (click)="clearSelectedAnswer(item)">Clear</button>
+            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-4 " *ngFor="let item of options">
+              <button class="btn btn-primary btn-block"  (click)="optionSelect(item)">{{item}}</button>
+            </div>
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+              <button class="btn btn-primary-outline btn-block" [disabled]="!highlightSelected" (click)="clearSelectedAnswer(item)">Clear</button>
+            </div>
           </div>
-          <div class="row btn-group-vertical">
-            <button class="btn btn-success-outline" (click)="submitPuzzle()">SUBMIT</button>
-            <button class="btn btn-primary btn-danger-outline btn-sm" (click)="newGame()">NEW GAME</button>
-            <button class="btn btn-primary btn-secondary-outline btn-sm" (click)="solvePuzzle()">Cheat</button>
+          <div class="row row-bottom">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+              <button class="btn btn-success-outline btn-block" (click)="submitPuzzle()">SUBMIT</button>
+              <button class="btn btn-primary btn-danger-outline btn-block btn-sm" (click)="newGame()">NEW GAME</button>
+              <button class="btn btn-primary btn-secondary-outline btn-block btn-sm" (click)="cheat()">Cheat</button>
+            </div>
           </div>
           <div *ngIf="puzzleSolved">
             <h2>CORRECT!!!</h2>

@@ -13,7 +13,17 @@
   justify-content: space-around;
 }
 
+.game-controls {
 
+  button {
+    margin: 3px;
+  }
+}
+
+.row-bottom {
+  display: flex;
+  align-items: flex-end;
+}
 
 .game-board-container {
   width: 407px;

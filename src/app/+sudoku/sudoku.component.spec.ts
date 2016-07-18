@@ -119,18 +119,16 @@ describe('Component: Sudoku', () => {
   });
 
   it('should cheat and solve the puzzle for you and unselect the selected square', () => {
-    component.solvePuzzle();
+    component.cheat();
     expect(component.highlightSelected).toBe('');
     expect(component.puzzle).toEqual(component.solved_puzzle);
   });
 
   it('should create a new game and unselect the selected square', () => {
-    spyOn(gameGenerator, 'getPuzzle');
-    gameGenerator.getPuzzle();
-    // Getting error when trying to run this function:
-    // component.newGame();
-    // expect(component.highlightSelected).toBe('');
-    expect(gameGenerator.getPuzzle).toHaveBeenCalled();
+    component.puzzle = [];
+    component.newGame();
+    expect(component.highlightSelected).toBe('');
+    expect(component.puzzle.length).toBe(9);
   });
 
   it('should select a square and set puzzle objects accordingly', () => {

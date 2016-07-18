@@ -115,22 +115,21 @@ export class SudokuComponent implements OnInit {
 
   submitPuzzle() {
     this.highlightSelected = '';
-    // if((this.puzzle && this.solved_puzzle) && _.isEqual(this.puzzle, this.solved_puzzle)) {
-    //   this.puzzleSolved = true;
-    // } else {
-    //   _.forEach(this.puzzle, (value, row) => {
-    //   _.forEach(value, (value, key) => {
-    //     if((this.puzzle && this.solved_puzzle) && _.isEqual(this.puzzle[row][key], this.solved_puzzle[row][key])) {
-    //     }
-    //     else {
-    //       this.error_puzzle[row][key] = 'error';
-    //     }
-    //   })
-    //  })
-    // }
+    if ((this.puzzle && this.solved_puzzle) && _.isEqual(this.puzzle, this.solved_puzzle)) {
+      this.puzzleSolved = true;
+    } else {
+      _.forEach(this.puzzle, (value, row) => {
+        _.forEach(value, (deep_value, key) => {
+          if ((this.puzzle && this.solved_puzzle) && _.isEqual(this.puzzle[row][key], this.solved_puzzle[row][key])) {
+          } else {
+            this.error_puzzle[row][key] = 'error';
+          }
+        });
+     });
+    }
   }
 
-  solvePuzzle() {
+  cheat() {
     this.highlightSelected = '';
     this.puzzle = this.solved_puzzle;
   }
