@@ -13,7 +13,7 @@
               class="item"
               [class.selected]="highlightSelected === rowIndex + '' + index"
               [class.protected]="isProtected(rowIndex, index)"
-              [class.error]="error_puzzle[rowIndex][index] === 'error'"
+              [class.error]="errorPuzzle[rowIndex][index] === 'error'"
               [class.correct]="puzzleSolved"
               >
                 {{item}}
@@ -35,7 +35,44 @@
           <div class="row row-bottom">
             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
               <button class="btn btn-success-outline btn-block" (click)="submitPuzzle()">SUBMIT</button>
+              <div class="radio">
+                <label>
+                  <input type="radio" [ngModel]="{checked: difficulty == 'easy'}" (change)="difficulty=$event.target.value"  name="difficulty" value="easy" checked>
+                  Easy
+                </label>
+              </div>
+              <div class="radio">
+                <label>
+                  <input type="radio" [ngModel]="{checked: difficulty == 'medium'}" (change)="difficulty=$event.target.value"  name="difficulty" value="medium">
+                  Medium
+                </label>
+              </div>
+              <div class="radio">
+                <label>
+                  <input type="radio" [ngModel]="{checked: difficulty == 'hard'}" (change)="difficulty=$event.target.value"  name="difficulty" value="hard">
+                  Hard
+                </label>
+              </div>
+              <div class="radio">
+                <label>
+                  <input type="radio" [ngModel]="{checked: difficulty == 'very-hard'}" (change)="difficulty=$event.target.value"  name="difficulty" value="very-hard">
+                  Very Hard
+                </label>
+              </div>
+              <div class="radio">
+                <label>
+                  <input type="radio" [ngModel]="{checked: difficulty == 'insane'}" (change)="difficulty=$event.target.value"  name="difficulty" value="insane">
+                  Insane
+                </label>
+              </div>
+              <div class="radio">
+                <label>
+                  <input type="radio" [ngModel]="{checked: difficulty == 'inhuman'}" (change)="difficulty=$event.target.value"  name="difficulty" value="inhuman">
+                  Inhuman
+                </label>
+              </div>
               <button class="btn btn-primary btn-danger-outline btn-block btn-sm" (click)="newGame()">NEW GAME</button>
+
               <button class="btn btn-primary btn-secondary-outline btn-block btn-sm" (click)="cheat()">Cheat</button>
             </div>
           </div>

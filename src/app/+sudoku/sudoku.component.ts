@@ -1,18 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import * as _ from 'lodash';
 
-import { SudokuGeneratorService } from './sudoku-generator.service';
+import { SudokuGameService } from './sudoku-game.service';
+import { Sudoku } from './sudoku';
 
 @Component({
   moduleId: module.id,
   selector: 'app-sudoku',
   templateUrl: 'sudoku.component.html',
   styleUrls: ['sudoku.component.css'],
-  directives: [
-
-  ],
   providers: [
-    SudokuGeneratorService
+    SudokuGameService,
+    Sudoku
   ]
 })
 export class SudokuComponent implements OnInit {
@@ -20,28 +19,29 @@ export class SudokuComponent implements OnInit {
   public isLoading: boolean;
   public puzzle: string[][];
   public solved_puzzle: string[][];
-  public error_puzzle: string[][];
+  public errorPuzzle: string[][];
   public originalPuzzle: string[][];
   public isError: any;
   public highlightSelected: string;
   public selected: number[];
   public options: number[];
   public puzzleSolved: boolean;
+  public difficulty: string;
 
-  constructor(private gameGenerator: SudokuGeneratorService) {}
+  constructor(private gameGenerator: SudokuGameService) {}
 
   ngOnInit() {
-    this.getPuzzle();
+    this.getPuzzle(this.difficulty);
     this.getPuzzleAnswerOptions();
     this.setOriginalPuzzle();
     this.getSolvedPuzzle();
-    this.getErrorPuzzle();
+    this.setErrorPuzzle();
     this.puzzleSolved = false;
   }
 
-  getPuzzle() {
+  getPuzzle(difficulty) {
     this.isLoading = true;
-    this.gameGenerator.getPuzzle().subscribe(
+    this.gameGenerator.getPuzzle(difficulty).subscribe(
       (res: any) => {
         this.puzzle = res;
       },
@@ -65,32 +65,16 @@ export class SudokuComponent implements OnInit {
     this.originalPuzzle = _.cloneDeep(this.puzzle);
   }
 
+  setErrorPuzzle() {
+    this.errorPuzzle = _.cloneDeep(this.originalPuzzle);
+  }
+
   isProtected(rowIndex, index) {
-    if (this.originalPuzzle[rowIndex][index] === '') {
+    if (this.originalPuzzle[rowIndex][index] === '.') {
       return false;
     } else {
       return true;
     }
-  }
-
-  getOriginalPuzzle() {
-      this.gameGenerator.getOriginalPuzzle().subscribe(
-      (res: any) => {
-        this.originalPuzzle = res;
-      },
-      (error: any) => {
-        this.isError = true;
-      });
-  }
-
-  getErrorPuzzle() {
-    this.gameGenerator.getErrorPuzzle().subscribe(
-      (res: any) => {
-        this.error_puzzle = res;
-      },
-      (error: any) => {
-        this.isError = true;
-      });
   }
 
   getPuzzleAnswerOptions() {
@@ -98,10 +82,10 @@ export class SudokuComponent implements OnInit {
   }
 
   itemSelect($event, rowIndex, index, item) {
-    if (this.originalPuzzle[rowIndex][index] === '') {
+    if (this.originalPuzzle[rowIndex][index] === '.') {
       this.highlightSelected = rowIndex + '' + index;
       this.selected = [rowIndex, index];
-      this.error_puzzle[rowIndex][index] = '';
+      this.errorPuzzle[rowIndex][index] = '';
     }
   }
 
@@ -122,7 +106,7 @@ export class SudokuComponent implements OnInit {
         _.forEach(value, (deep_value, key) => {
           if ((this.puzzle && this.solved_puzzle) && _.isEqual(this.puzzle[row][key], this.solved_puzzle[row][key])) {
           } else {
-            this.error_puzzle[row][key] = 'error';
+            this.errorPuzzle[row][key] = 'error';
           }
         });
      });

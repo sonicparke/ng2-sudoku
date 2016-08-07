@@ -55,7 +55,6 @@ export class Sudoku {
         /* Initialize the Sudoku library (invoked after library load)
         */
         this.SQUARES             = this.cross(this.ROWS, this.COLS);
-        // console.log('this.SQUARES :', this.SQUARES);
         this.UNITS               = this.getAllUnits(this.ROWS, this.COLS);
         this.SQUARE_UNITS_MAP    = this.getSquareUnitsMap(this.SQUARES, this.UNITS);
         this.SQUARE_PEERS_MAP    = this.getSquarePeersMap(this.SQUARES, this.SQUARE_UNITS_MAP);
@@ -68,7 +67,7 @@ export class Sudoku {
         /* Generate a new Sudoku puzzle of a particular `difficulty`, e.g.,
 
             // Generate an 'easy' sudoku puzzle
-            sudoku.generate('easy');
+            generate('easy');
 
 
         Difficulties are as follows, and represent the number of given squares:
@@ -84,7 +83,7 @@ export class Sudoku {
         You may also enter a custom number of squares to be given, e.g.,
 
             // Generate a new Sudoku puzzle with 60 given squares
-            sudoku.generate(60)
+            generate(60)
 
 
         `difficulty` must be a number between 17 and 81 inclusive. If it's
@@ -102,92 +101,99 @@ export class Sudoku {
         // If `difficulty` is a string or undefined, convert it to a number or
         // default it to 'easy' if undefined.
         if (typeof difficulty === 'string' || typeof difficulty === 'undefined') {
-            difficulty = DIFFICULTY[difficulty] || DIFFICULTY.easy;
+            difficulty = this.DIFFICULTY[difficulty] || this.DIFFICULTY.easy;
         }
 
         // Force difficulty between 17 and 81 inclusive
-        difficulty = sudoku._force_range(difficulty, NR_SQUARES + 1,
-                MIN_GIVENS);
+        difficulty = this.forceRange(difficulty, this.NR_SQUARES + 1,
+                this.MIN_GIVENS);
 
         // Default unique to true
         unique = unique || true;
 
         // Get a set of squares and all possible candidates for each square
         let blank_board = '';
-        for (let i = 0; i < NR_SQUARES; ++i) {
+        for (let i = 0; i < this.NR_SQUARES; ++i) {
             blank_board += '.';
         }
-        let candidates = sudoku._get_candidates_map(blank_board);
+        let candidates = this.getCandidatesMap(blank_board);
 
         // For each item in a shuffled list of squares
-        let shuffled_squares = sudoku._shuffle(SQUARES);
-        for (let si in shuffled_squares) {
-            let square = shuffled_squares[si];
+        let shuffled_squares = this.shuffle(this.SQUARES);
+          for (let si in shuffled_squares) {
+            if (si) {
+              let square = shuffled_squares[si];
 
-            // If an assignment of a random chioce causes a contradictoin, give
-            // up and try again
-            let rand_candidate_idx =
-                    sudoku._rand_range(candidates[square].length);
-            let rand_candidate = candidates[square][rand_candidate_idx];
-            if (!sudoku._assign(candidates, square, rand_candidate)) {
-                break;
-            }
+              // If an assignment of a random chioce causes a contradictoin, give
+              // up and try again
+              let rand_candidate_idx =
+                      this.randRange(candidates[square].length);
+              let rand_candidate = candidates[square][rand_candidate_idx];
+              if (!this.assign(candidates, square, rand_candidate)) {
+                  break;
+              }
 
-            // Make a list of all single candidates
-            let single_candidates = [];
-            for (let si in SQUARES) {
-                let square = SQUARES[si];
+              // Make a list of all single candidates
+              let single_candidates = [];
+              for (let si in this.SQUARES) {
+                if (si) {
+                  let square = this.SQUARES[si];
 
-                if (candidates[square].length == 1) {
-                    single_candidates.push(candidates[square]);
+                  if (candidates[square].length === 1) {
+                      single_candidates.push(candidates[square]);
+                  }
                 }
-            }
+              }
 
-            // If we have at least difficulty, and the unique candidate count is
-            // at least 8, return the puzzle!
-            if (single_candidates.length >= difficulty &&
-                    sudoku._strip_dups(single_candidates).length >= 8) {
-                let board = '';
-                let givens_idxs = [];
-                for (let i in SQUARES) {
-                    let square = SQUARES[i];
-                    if (candidates[square].length == 1) {
-                        board += candidates[square];
-                        givens_idxs.push(i);
-                    } else {
-                        board += sudoku.BLANK_CHAR;
+              // If we have at least difficulty, and the unique candidate count is
+              // at least 8, return the puzzle!
+              if (single_candidates.length >= difficulty &&
+                      this.stripDups(single_candidates).length >= 8) {
+                  let board = '';
+                  let givens_idxs = [];
+                  for (let i in this.SQUARES) {
+                    if (i) {
+                      let square = this.SQUARES[i];
+                      if (candidates[square].length === 1) {
+                          board += candidates[square];
+                          givens_idxs.push(i);
+                      } else {
+                          board += this.BLANK_CHAR;
+                      }
                     }
-                }
+                  }
 
-                // If we have more than `difficulty` givens, remove some random
-                // givens until we're down to exactly `difficulty`
-                let nr_givens = givens_idxs.length;
-                if (nr_givens > difficulty) {
-                    givens_idxs = sudoku._shuffle(givens_idxs);
-                    for (let i = 0; i < nr_givens - difficulty; ++i) {
-                        let target = parseInt(givens_idxs[i]);
-                        board = board.substr(0, target) + sudoku.BLANK_CHAR +
-                            board.substr(target + 1);
-                    }
-                }
+                  // If we have more than `difficulty` givens, remove some random
+                  // givens until we're down to exactly `difficulty`
+                  let nr_givens = givens_idxs.length;
+                  if (nr_givens > difficulty) {
+                      givens_idxs = this.shuffle(givens_idxs);
+                      for (let i = 0; i < nr_givens - difficulty; ++i) {
+                          let target = parseInt(givens_idxs[i], 10);
+                          board = board.substr(0, target) + this.BLANK_CHAR +
+                              board.substr(target + 1);
+                      }
+                  }
 
-                // Double check board is solvable
-                // TODO: Make a standalone board checker. Solve is expensive.
-                if (sudoku.solve(board)) {
-                    return board;
-                }
+                  // Double check board is solvable
+                  // TODO: Make a standalone board checker. Solve is expensive.
+                  if (this.solve(board)) {
+                      this.printBoard(board);
+                      return board;
+                  }
+              }
             }
         }
 
         // Give up and try a new puzzle
-        return sudoku.generate(difficulty);
+        return this.generate(difficulty, true);
     };
 
     // Solve
     // -------------------------------------------------------------------------
     solve(board: any, reverse?: boolean): string | boolean {
         /* Solve a sudoku puzzle given a sudoku `board`, i.e., an 81-character
-        string of sudoku.DIGITS, 1-9, and spaces identified by '.', representing the
+        string of DIGITS, 1-9, and spaces identified by '.', representing the
         squares. There must be a minimum of 17 givens. If the given board has no
         solutions, return false.
 
@@ -197,7 +203,7 @@ export class Sudoku {
         */
 
         // Assure a valid board
-        let report = sudoku.validate_board(board);
+        let report = this.validateBoard(board);
         if (report !== true) {
             throw report;
         }
@@ -205,24 +211,26 @@ export class Sudoku {
         // Check number of givens is at least MIN_GIVENS
         let nr_givens = 0;
         for (let i in board) {
-            if (board[i] !== sudoku.BLANK_CHAR && sudoku._in(board[i], sudoku.DIGITS)) {
+            if (board[i] !== this.BLANK_CHAR && this.inSeq(board[i], this.DIGITS)) {
                 ++nr_givens;
             }
         }
-        if (nr_givens < MIN_GIVENS) {
-            throw 'Too few givens. Minimum givens is ' + MIN_GIVENS;
+        if (nr_givens < this.MIN_GIVENS) {
+            throw 'Too few givens. Minimum givens is ' + this.MIN_GIVENS;
         }
 
         // Default reverse to false
         reverse = reverse || false;
 
-        let candidates = sudoku._get_candidates_map(board);
-        let result = sudoku._search(candidates, reverse);
+        let candidates = this.getCandidatesMap(board);
+        let result: {} = this.search(candidates, reverse);
 
         if (result) {
             let solution = '';
             for (let square in result) {
+              if (square) {
                 solution += result[square];
+              }
             }
             return solution;
         }
@@ -233,18 +241,18 @@ export class Sudoku {
         /* Return all possible candidatees for each square as a grid of
         candidates, returnning `false` if a contradiction is encountered.
 
-        Really just a wrapper for sudoku._get_candidates_map for programmer
+        Really just a wrapper for this.getCandidatesMap for programmer
         consumption.
         */
 
         // Assure a valid board
-        let report = sudoku.validate_board(board);
+        let report = this.validateBoard(board);
         if (report !== true) {
             throw report;
         }
 
         // Get a candidates map
-        let candidates_map = sudoku._get_candidates_map(board);
+        let candidates_map: any = this.getCandidatesMap(board);
 
         // If there's an error, return false
         if (!candidates_map) {
@@ -256,50 +264,56 @@ export class Sudoku {
         let cur_row = [];
         let i = 0;
         for (let square in candidates_map) {
+          if (square) {
             let candidates = candidates_map[square];
             cur_row.push(candidates);
-            if (i % 9 == 8) {
+            if (i % 9 === 8) {
                 rows.push(cur_row);
                 cur_row = [];
             }
             ++i;
+          }
         }
         return rows;
     }
 
-    getCandidatesMap(board: string): any[] {
+    getCandidatesMap(board: string): {} | boolean {
         /* Get all possible candidates for each square as a map in the form
-        {square: sudoku.DIGITS} using recursive constraint propagation. Return `false`
+        {square: DIGITS} using recursive constraint propagation. Return `false`
         if a contradiction is encountered
         */
 
         // Assure a valid board
-        let report = sudoku.validate_board(board);
+        let report = this.validateBoard(board);
         if (report !== true) {
             throw report;
         }
 
         let candidate_map = {};
-        let squares_values_map = sudoku._get_square_vals_map(board);
+        let squares_values_map = this.getSquareValsMap(board);
 
         // Start by assigning every digit as a candidate to every square
-        for (let si in SQUARES) {
-            candidate_map[SQUARES[si]] = sudoku.DIGITS;
+        for (let si in this.SQUARES) {
+          if (si) {
+            candidate_map[this.SQUARES[si]] = this.DIGITS;
+          }
         }
 
         // For each non-blank square, assign its value in the candidate map and
         // propigate.
         for (let square in squares_values_map) {
+          if (square) {
             let val = squares_values_map[square];
 
-            if (sudoku._in(val, sudoku.DIGITS)) {
-                let new_candidates = sudoku._assign(candidate_map, square, val);
+            if (this.inSeq(val, this.DIGITS)) {
+                let new_candidates = this.assign(candidate_map, square, val);
 
                 // Fail if we can't assign val to square
                 if (!new_candidates) {
                     return false;
                 }
             }
+          }
         }
 
         return candidate_map;
@@ -323,8 +337,9 @@ export class Sudoku {
         // Return the candidates map.
         let max_nr_candidates = 0;
         let max_candidates_square = null;
-        for (let si in SQUARES) {
-            let square = SQUARES[si];
+        for (let si in this.SQUARES) {
+          if (si) {
+            let square = this.SQUARES[si];
 
             let nr_candidates = candidates[square].length;
 
@@ -332,6 +347,7 @@ export class Sudoku {
                 max_nr_candidates = nr_candidates;
                 max_candidates_square = square;
             }
+          }
         }
         if (max_nr_candidates === 1) {
             return candidates;
@@ -340,8 +356,9 @@ export class Sudoku {
         // Choose the blank square with the fewest possibilities > 1
         let min_nr_candidates = 10;
         let min_candidates_square = null;
-        for (si in SQUARES) {
-            let square = SQUARES[si];
+        for (let si in this.SQUARES) {
+          if (si) {
+            let square = this.SQUARES[si];
 
             let nr_candidates = candidates[square].length;
 
@@ -349,6 +366,7 @@ export class Sudoku {
                 min_nr_candidates = nr_candidates;
                 min_candidates_square = square;
             }
+          }
         }
 
         // Recursively search through each of the candidates of the square
@@ -357,36 +375,40 @@ export class Sudoku {
         // Rotate through the candidates forwards
         let min_candidates = candidates[min_candidates_square];
         if (!reverse) {
-            for (let vi in min_candidates) {
-                let val = min_candidates[vi];
+          for (let vi in min_candidates) {
+            if (vi) {
+              let val = min_candidates[vi];
 
-                // TODO: Implement a non-rediculous deep copy function
-                let candidates_copy = JSON.parse(JSON.stringify(candidates));
-                let candidates_next = sudoku._search(
-                    sudoku._assign(candidates_copy, min_candidates_square, val)
-                );
+              // TODO: Implement a non-rediculous deep copy function
+              let candidates_copy = JSON.parse(JSON.stringify(candidates));
+              let candidates_next = this.search(
+                  this.assign(candidates_copy, min_candidates_square, val)
+              );
 
-                if (candidates_next) {
-                    return candidates_next;
-                }
+              if (candidates_next) {
+                  return candidates_next;
+              }
             }
+          }
 
         // Rotate through the candidates backwards
         } else {
-            for (let vi = min_candidates.length - 1; vi >= 0; --vi) {
-                let val = min_candidates[vi];
+          for (let vi = min_candidates.length - 1; vi >= 0; --vi) {
+            if (vi) {
+              let val = min_candidates[vi];
 
-                // TODO: Implement a non-rediculous deep copy function
-                let candidates_copy = JSON.parse(JSON.stringify(candidates));
-                let candidates_next = sudoku._search(
-                    sudoku._assign(candidates_copy, min_candidates_square, val),
-                    reverse
-                );
+              // TODO: Implement a non-rediculous deep copy function
+              let candidates_copy = JSON.parse(JSON.stringify(candidates));
+              let candidates_next = this.search(
+                  this.assign(candidates_copy, min_candidates_square, val),
+                  reverse
+              );
 
-                if (candidates_next) {
-                    return candidates_next;
-                }
+              if (candidates_next) {
+                  return candidates_next;
+              }
             }
+          }
         }
 
         // If we get through all combinations of the square with the fewest
@@ -394,7 +416,7 @@ export class Sudoku {
         return false;
     };
 
-    assign(candidates: {}, square: number, val: number): {} | boolean {
+    assign(candidates: {}, square: string, val: number): {} | boolean {
         /* Eliminate all values, *except* for `val`, from `candidates` at
         `square` (candidates[square]), and propagate. Return the candidates map
         when finished. If a contradiciton is found, return false.
@@ -409,21 +431,23 @@ export class Sudoku {
         // at the current square, and propigate. If at any point we get a
         // contradiction, return false.
         for (let ovi in other_vals) {
+          if (ovi) {
             let other_val = other_vals[ovi];
 
             let candidates_next =
-                sudoku._eliminate(candidates, square, other_val);
+                this.eliminate(candidates, square, other_val);
 
             if (!candidates_next) {
-                //console.log('Contradiction found by _eliminate.');
+                // console.log('Contradiction found by this.eliminate.');
                 return false;
             }
+          }
         }
 
         return candidates;
     };
 
-    eliminate(candidates: {}, square: number, val: number): {} | boolean {
+    eliminate(candidates: {}, square: string, val: number): {} | boolean {
         /* Eliminate `val` from `candidates` at `square`, (candidates[square]),
         and propagate when values or places <= 2. Return updated candidates,
         unless a contradiction is detected, in which case, return false.
@@ -433,7 +457,7 @@ export class Sudoku {
 
         // If `val` has already been eliminated from candidates[square], return
         // with candidates.
-        if (!sudoku._in(val, candidates[square])) {
+        if (!this.inSeq(val, candidates[square])) {
             return candidates;
         }
 
@@ -446,15 +470,17 @@ export class Sudoku {
         if (nr_candidates === 1) {
             let target_val = candidates[square];
 
-            for (let pi in SQUARE_PEERS_MAP[square]) {
-                let peer = SQUARE_PEERS_MAP[square][pi];
+            for (let pi in this.SQUARE_PEERS_MAP[square]) {
+              if (pi) {
+                let peer = this.SQUARE_PEERS_MAP[square][pi];
 
                 let candidates_new =
-                        sudoku._eliminate(candidates, peer, target_val);
+                        this.eliminate(candidates, peer, target_val);
 
                 if (!candidates_new) {
                     return false;
                 }
+              }
             }
 
         // Otherwise, if the square has no candidates, we have a contradiction.
@@ -464,15 +490,18 @@ export class Sudoku {
         }
 
         // If a unit is reduced to only one place for a value, then assign it
-        for (let ui in SQUARE_UNITS_MAP[square]) {
-            let unit = SQUARE_UNITS_MAP[square][ui];
+        for (let ui in this.SQUARE_UNITS_MAP[square]) {
+          if (ui) {
+            let unit = this.SQUARE_UNITS_MAP[square][ui];
 
             let val_places = [];
             for (let si in unit) {
+              if (si) {
                 let unit_square = unit[si];
-                if (sudoku._in(val, candidates[unit_square])) {
+                if (this.inSeq(val, candidates[unit_square])) {
                     val_places.push(unit_square);
                 }
+              }
             }
 
             // If there's no place for this value, we have a contradition!
@@ -483,12 +512,13 @@ export class Sudoku {
             // Otherwise the value can only be in one place. Assign it there.
             } else if (val_places.length === 1) {
                 let candidates_new =
-                    sudoku._assign(candidates, val_places[0], val);
+                    this.assign(candidates, val_places[0], val);
 
                 if (!candidates_new) {
                     return false;
                 }
             }
+          }
         }
 
         return candidates;
@@ -499,18 +529,20 @@ export class Sudoku {
     // -------------------------------------------------------------------------
     // Squares, and their relationships with values, units, and peers.
 
-    getSquareValsMap (board: string): any[] {
+    getSquareValsMap (board: string): {} {
         /* Return a map of squares -> values
         */
         let squares_vals_map = {};
 
         // Make sure `board` is a string of length 81
-        if (board.length != SQUARES.length) {
+        if (board.length !== this.SQUARES.length) {
             throw 'Board/squares length mismatch.';
 
         } else {
-            for (let i in SQUARES) {
-                squares_vals_map[SQUARES[i]] = board[i];
+            for (let i in this.SQUARES) {
+              if (i) {
+                squares_vals_map[this.SQUARES[i]] = board[i];
+              }
             }
         }
 
@@ -524,6 +556,7 @@ export class Sudoku {
 
         // For every square...
         for (let si in squares) {
+          if (si) {
             let cur_square = squares[si];
 
             // Maintain a list of the current square's units
@@ -532,15 +565,18 @@ export class Sudoku {
             // Look through the units, and see if the current square is in it,
             // and if so, add it to the list of of the square's units.
             for (let ui in units) {
+              if (ui) {
                 let cur_unit = units[ui];
 
                 if (cur_unit.indexOf(cur_square) !== -1) {
                     cur_square_units.push(cur_unit);
                 }
+              }
             }
 
             // Save the current square and its units to the map
             square_unit_map[cur_square] = cur_square_units;
+          }
         }
 
         return square_unit_map;
@@ -554,6 +590,7 @@ export class Sudoku {
 
         // For every square...
         for (let si in squares) {
+          if (si) {
             let cur_square = squares[si];
             let cur_square_units = units_map[cur_square];
 
@@ -562,20 +599,25 @@ export class Sudoku {
 
             // Look through the current square's units map...
             for (let sui in cur_square_units) {
+              if (sui) {
                 let cur_unit = cur_square_units[sui];
 
                 for (let ui in cur_unit) {
+                  if (ui) {
                     let cur_unit_square = cur_unit[ui];
 
                     if (cur_square_peers.indexOf(cur_unit_square) === -1 &&
                             cur_unit_square !== cur_square) {
                         cur_square_peers.push(cur_unit_square);
                     }
+                  }
                 }
+              }
             }
 
             // Save the current square an its associated peers to the map
             square_peers_map[cur_square] = cur_square_peers;
+          }
         }
 
         return square_peers_map;
@@ -588,21 +630,29 @@ export class Sudoku {
 
         // Rows
         for (let ri in rows) {
-            units.push(sudoku._cross(rows[ri], cols));
+          if (ri) {
+            units.push(this.cross(rows[ri], cols));
+          }
         }
 
         // Columns
         for (let ci in cols) {
-           units.push(sudoku._cross(rows, cols[ci]));
+          if (ci) {
+            units.push(this.cross(rows, cols[ci]));
+          }
         }
 
         // Boxes
         let row_squares = ['ABC', 'DEF', 'GHI'];
         let col_squares = ['123', '456', '789'];
         for (let rsi in row_squares) {
+          if (rsi) {
             for (let csi in col_squares) {
-                units.push(sudoku._cross(row_squares[rsi], col_squares[csi]));
+              if (csi) {
+                units.push(this.cross(row_squares[rsi], col_squares[csi]));
+              }
             }
+          }
         }
 
         return units;
@@ -617,11 +667,14 @@ export class Sudoku {
         let rows = [];
         let cur_row = [];
         for (let i in board_string) {
+          if (i) {
             cur_row.push(board_string[i]);
-            if (i % 9 == 8) {
+            let ip: number = parseInt(i, 10);
+            if (ip % 9 === 8) {
                 rows.push(cur_row);
                 cur_row = [];
             }
+          }
         }
         return rows;
     };
@@ -647,7 +700,7 @@ export class Sudoku {
         */
 
         // Assure a valid board
-        let report = sudoku.validate_board(board);
+        let report = this.validateBoard(board);
         if (report !== true) {
             throw report;
         }
@@ -659,30 +712,31 @@ export class Sudoku {
         let H_BOX_PADDING = '\n'; // Box horizontal padding
 
         let display_string = '';
-
         for (let i in board) {
+          if (i) {
             let square = board[i];
 
             // Add the square and some padding
             display_string += square + V_PADDING;
+            let ip: number = parseInt(i, 10);
 
             // Vertical edge of a box, insert v. box padding
-            if (i % 3 === 2) {
+            if (ip % 3 === 2) {
                 display_string += V_BOX_PADDING;
             }
 
             // End of a line, insert horiz. padding
-            if (i % 9 === 8) {
+            if (ip % 9 === 8) {
                 display_string += H_PADDING;
             }
 
             // Horizontal edge of a box, insert h. box padding
-            if (i % 27 === 26) {
+            if (ip % 27 === 26) {
                 display_string += H_BOX_PADDING;
             }
+          }
         }
 
-        console.log(display_string);
     };
 
     validateBoard(board): string | boolean {
@@ -696,14 +750,14 @@ export class Sudoku {
         }
 
         // Invalid board length
-        if (board.length !== NR_SQUARES) {
-            return 'Invalid board size. Board must be exactly ' + NR_SQUARES +
+        if (board.length !== this.NR_SQUARES) {
+            return 'Invalid board size. Board must be exactly ' + this.NR_SQUARES +
                     ' squares.';
         }
 
         // Check for invalid characters
         for (let i in board) {
-            if (!sudoku._in(board[i], sudoku.DIGITS) && board[i] !== sudoku.BLANK_CHAR) {
+            if (!this.inSeq(board[i], this.DIGITS) && board[i] !== this.BLANK_CHAR) {
                 return 'Invalid board character encountered at index ' + i +
                         ': ' + board[i];
             }
@@ -715,14 +769,18 @@ export class Sudoku {
 
     cross(a, b) {
         /* Cross product of all elements in `a` and `b`, e.g.,
-        sudoku._cross('abc', '123') ->
+        this.cross('abc', '123') ->
         ['a1', 'a2', 'a3', 'b1', 'b2', 'b3', 'c1', 'c2', 'c3']
         */
         let result = [];
         for (let ai in a) {
+          if (ai) {
             for (let bi in b) {
+              if (bi) {
                 result.push(a[ai] + b[bi]);
+              }
             }
+          }
         }
         return result;
     };
@@ -755,14 +813,16 @@ export class Sudoku {
             shuffled.push(false);
         }
 
-        for (let i of seq) {
-            let ti = sudoku._rand_range(seq.length);
+        for (let i in seq) {
+            if (i) {
+                let ti = this.randRange(seq.length);
 
-            while(shuffled[ti]) {
-                ti = (ti + 1) > (seq.length - 1) ? 0 : (ti + 1);
+                while (shuffled[ti]) {
+                    ti = (ti + 1) > (seq.length - 1) ? 0 : (ti + 1);
+                }
+
+                shuffled[ti] = seq[i];
             }
-
-            shuffled[ti] = seq[i];
         }
 
         return shuffled;
@@ -787,11 +847,13 @@ export class Sudoku {
         let seq_set = [];
         let dup_map = {};
         for (let i in seq) {
+          if (i) {
             let e = seq[i];
             if (!dup_map[e]) {
                 seq_set.push(e);
                 dup_map[e] = true;
             }
+          }
         }
         return seq_set;
     };
@@ -801,15 +863,15 @@ export class Sudoku {
         `max`. `min` is optional, and will default to 0. If `nr` is undefined,
         treat it as zero.
         */
-        min = min || 0
-        nr = nr || 0
+        min = min || 0;
+        nr = nr || 0;
         if (nr < min) {
             return min;
         }
         if (nr > max) {
             return max;
         }
-        return nr
+        return nr;
     }
 
 // Pass whatever the root object is, lsike 'window' in browsers
