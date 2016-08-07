@@ -7,12 +7,16 @@ import {
   async, inject
 } from '@angular/core/testing';
 import { SudokuGameService } from './sudoku-game.service';
+import { Sudoku } from './sudoku';
 
 describe('SudokuGameService', () => {
-  beforeEachProviders(() => [SudokuGameService]);
+  beforeEachProviders(() => [
+    SudokuGameService,
+    Sudoku
+  ]);
 
-  xit('should ...',
-      inject([SudokuGameService], (service: SudokuGameService) => {
-    expect(service).toBeTruthy();
-  }));
+  it('should inject the service',
+    inject([SudokuGameService], (service: SudokuGameService) => {
+      expect(service).toBeTruthy();
+    }));
 });

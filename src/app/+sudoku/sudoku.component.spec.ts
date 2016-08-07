@@ -20,64 +20,64 @@ import { Sudoku } from './sudoku';
  * but for now I'm just using the puzzle data
  * from the actual service
  */
-// class MockSudokuGameService extends SudokuGameService {
-//   constructor() {
-//     super();
-//   }
+class MockSudokuGameService extends SudokuGameService {
+  constructor(public sudoku: Sudoku) {
+    super(sudoku);
+  }
 
-//   getPuzzle() {
-//     return Observable.of([
-//       ['5', '1', '6', '', '', '', '8', '4', '7'],
-//       ['2', '4', '7', '8', '1', '5', '3', '9', '6'],
-//       ['3', '8', '9', '6', '7', '4', '5', '1', '2'],
-//       ['8', '9', '1', '3', '5', '6', '', '', '4'],
-//       ['4', '7', '3', '1', '2', '9', '6', '8', '5'],
-//       ['6', '2', '5', '7', '4', '8', '1', '3', '9'],
-//       ['9', '5', '8', '4', '6', '1', '', '', '3'],
-//       ['1', '', '', '', '', '7', '', '', '8'],
-//       ['7', '', '', '', '8', '', '', '', '1']
-//     ]);
-//   }
+  getPuzzle() {
+    return Observable.of([
+      ['5', '1', '6', '', '', '', '8', '4', '7'],
+      ['2', '4', '7', '8', '1', '5', '3', '9', '6'],
+      ['3', '8', '9', '6', '7', '4', '5', '1', '2'],
+      ['8', '9', '1', '3', '5', '6', '', '', '4'],
+      ['4', '7', '3', '1', '2', '9', '6', '8', '5'],
+      ['6', '2', '5', '7', '4', '8', '1', '3', '9'],
+      ['9', '5', '8', '4', '6', '1', '', '', '3'],
+      ['1', '', '', '', '', '7', '', '', '8'],
+      ['7', '', '', '', '8', '', '', '', '1']
+    ]);
+  }
 
-//   getSolvedPuzzle() {
-//     return Observable.of([
-//       ['5', '1', '6', '2', '9', '3', '8', '4', '7'],
-//       ['2', '4', '7', '8', '1', '5', '3', '9', '6'],
-//       ['3', '8', '9', '6', '7', '4', '5', '1', '2'],
-//       ['8', '9', '1', '3', '5', '6', '2', '7', '4'],
-//       ['4', '7', '3', '1', '2', '9', '6', '8', '5'],
-//       ['6', '2', '5', '7', '4', '8', '1', '3', '9'],
-//       ['9', '5', '8', '4', '6', '1', '7', '2', '3'],
-//       ['1', '6', '2', '9', '3', '7', '4', '5', '8'],
-//       ['7', '3', '4', '5', '8', '2', '9', '6', '1']
-//     ]);
-//   }
+  getSolvedPuzzle() {
+    return Observable.of([
+      ['5', '1', '6', '2', '9', '3', '8', '4', '7'],
+      ['2', '4', '7', '8', '1', '5', '3', '9', '6'],
+      ['3', '8', '9', '6', '7', '4', '5', '1', '2'],
+      ['8', '9', '1', '3', '5', '6', '2', '7', '4'],
+      ['4', '7', '3', '1', '2', '9', '6', '8', '5'],
+      ['6', '2', '5', '7', '4', '8', '1', '3', '9'],
+      ['9', '5', '8', '4', '6', '1', '7', '2', '3'],
+      ['1', '6', '2', '9', '3', '7', '4', '5', '8'],
+      ['7', '3', '4', '5', '8', '2', '9', '6', '1']
+    ]);
+  }
 
-//   getErrorPuzzle() {
-//     return Observable.of([
-//       ['', '', '', '', '', '', '', '', ''],
-//       ['', '', '', '', '', '', '', '', ''],
-//       ['', '', '', '', '', '', '', '', ''],
-//       ['', '', '', '', '', '', '', '', ''],
-//       ['', '', '', '', '', '', '', '', ''],
-//       ['', '', '', '', '', '', '', '', ''],
-//       ['', '', '', '', '', '', '', '', ''],
-//       ['', '', '', '', '', '', '', '', ''],
-//       ['', '', '', '', '', '', '', '', '']
-//     ]);
-//   }
+  getErrorPuzzle() {
+    return Observable.of([
+      ['', '', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', '', '']
+    ]);
+  }
 
-// }
+}
 
 describe('Component: Sudoku', () => {
   let sudokuClass: Sudoku = new Sudoku();
-  let gameGenerator: SudokuGameService = new SudokuGameService(sudokuClass);
-  // let gameGenerator: MockSudokuGameService = new MockSudokuGameService();
+  // let gameGenerator: SudokuGameService = new SudokuGameService(sudokuClass);
+  let gameGenerator: MockSudokuGameService = new MockSudokuGameService(sudokuClass);
   let component: SudokuComponent = new SudokuComponent(gameGenerator);
 
   beforeEach(() => {
     component.ngOnInit();
-    component.highlightSelected = '0, 8';
+    component.highlightSelected = '05';
   });
 
   it('should create an instance', () => {
@@ -133,10 +133,10 @@ describe('Component: Sudoku', () => {
     expect(component.puzzle.length).toBe(9);
   });
 
-  xit('should select a square and set puzzle objects accordingly', () => {
+  it('should select a square and set puzzle objects accordingly', () => {
     component.itemSelect('mouseevent', 0, 5, 'item');
     expect(component.highlightSelected).toBe(0 + '' + 5);
-    expect(component.selected).toEqual([0, 5]);
+    // expect(component.selected).toEqual([0, 5]);
     expect(component.errorPuzzle[0][5]).toBe('');
   });
 
