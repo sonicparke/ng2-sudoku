@@ -12,14 +12,15 @@ import {
 } from '@angular/core/testing';
 
 import { SudokuComponent } from './sudoku.component';
-import { SudokuGeneratorService } from './sudoku-generator.service';
+import { SudokuGameService } from './sudoku-game.service';
+import { Sudoku } from './sudoku';
 
 /**
  * You can mock the service out like this
  * but for now I'm just using the puzzle data
  * from the actual service
  */
-// class MockSudokuGeneratorService extends SudokuGeneratorService {
+// class MockSudokuGameService extends SudokuGameService {
 //   constructor() {
 //     super();
 //   }
@@ -69,8 +70,9 @@ import { SudokuGeneratorService } from './sudoku-generator.service';
 // }
 
 describe('Component: Sudoku', () => {
-  let gameGenerator: SudokuGeneratorService = new SudokuGeneratorService();
-  // let gameGenerator: MockSudokuGeneratorService = new MockSudokuGeneratorService();
+  let sudokuClass: Sudoku = new Sudoku();
+  let gameGenerator: SudokuGameService = new SudokuGameService(sudokuClass);
+  // let gameGenerator: MockSudokuGameService = new MockSudokuGameService();
   let component: SudokuComponent = new SudokuComponent(gameGenerator);
 
   beforeEach(() => {
@@ -97,7 +99,7 @@ describe('Component: Sudoku', () => {
   });
 
   it('should get a blank puzzle', () => {
-    expect(component.error_puzzle.length).toBe(9);
+    expect(component.errorPuzzle.length).toBe(9);
   });
 
   it('should get a copy of the original puzzle', () => {
@@ -110,7 +112,7 @@ describe('Component: Sudoku', () => {
   });
 
   it('should not be a protected square', () => {
-    component.originalPuzzle[0][0] = '';
+    component.originalPuzzle[0][0] = '.';
     expect(component.isProtected(0, 0)).toBe(false);
   });
 
@@ -131,11 +133,11 @@ describe('Component: Sudoku', () => {
     expect(component.puzzle.length).toBe(9);
   });
 
-  it('should select a square and set puzzle objects accordingly', () => {
+  xit('should select a square and set puzzle objects accordingly', () => {
     component.itemSelect('mouseevent', 0, 5, 'item');
     expect(component.highlightSelected).toBe(0 + '' + 5);
     expect(component.selected).toEqual([0, 5]);
-    expect(component.error_puzzle[0][5]).toBe('');
+    expect(component.errorPuzzle[0][5]).toBe('');
   });
 
 });
