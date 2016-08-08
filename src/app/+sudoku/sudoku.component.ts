@@ -3,12 +3,16 @@ import * as _ from 'lodash';
 
 import { SudokuGameService } from './sudoku-game.service';
 import { Sudoku } from './sudoku';
+import { RemoveDotPipe } from '../shared/remove-dot.pipe';
 
 @Component({
   moduleId: module.id,
   selector: 'app-sudoku',
   templateUrl: 'sudoku.component.html',
   styleUrls: ['sudoku.component.css'],
+  pipes: [
+    RemoveDotPipe
+  ],
   providers: [
     SudokuGameService,
     Sudoku

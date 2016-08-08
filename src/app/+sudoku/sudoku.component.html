@@ -16,7 +16,7 @@
               [class.error]="errorPuzzle[rowIndex][index] === 'error'"
               [class.correct]="puzzleSolved"
               >
-                {{item}}
+                {{item  | removeDot}}
               </li>
             </ul>
           </div>
